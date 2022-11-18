@@ -22,7 +22,6 @@ Work: Engineer and Partner at [REVSYS](https://www.revsys.com)
 * [awesomedjango.org](https://awesomedjango.org)
 * [djangocon.us](https://djangocon.us)
 
-
 Card: pipx run webology
 
 """
