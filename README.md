@@ -2,7 +2,7 @@
 
 Inspired by [bnb/bitandbang](https://github.com/bnb/bitandbang)
 
-### 🏠 [Homepage](https://github.com/jefftriplett/django-startproject)
+### 🏠 [Homepage](https://github.com/jefftriplett/webology)
 
 ## :rocket: Usage
 
