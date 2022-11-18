@@ -24,5 +24,8 @@ set dotenv-load := false
 @test:
     pytest
 
+@update:
+    cog -P -r README.md
+
 @upload:
     twine upload dist/*
