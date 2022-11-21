@@ -11,6 +11,9 @@ set dotenv-load := false
 @build:
     python -m build
 
+@bump:
+    pipx run bumpver update
+
 @check:
     twine check dist/*
 
