@@ -25,6 +25,7 @@ Work: Engineer and Partner at [REVSYS](https://www.revsys.com)
 Card: pipx run webology
 
 """
+__version__ = "2022.11.1"
 
 
 def main():
