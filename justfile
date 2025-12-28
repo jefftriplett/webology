@@ -6,32 +6,35 @@ set dotenv-load := false
     just --list
 
 @bootstrap:
-    pip install -U -r requirements.in
+    uv sync
 
 @build:
-    python -m build
+    uv build
 
 @bump *ARGS:
-    pipx run bumpver update {{ ARGS }}
+    uv run bumpver update {{ ARGS }}
 
 @bump-dry:
     just bump --dry
 
 @check:
-    twine check dist/*
+    uv run twine check dist/*
+
+@docs:
+    uv run rich-codex --no-confirm --skip-git-checks
 
 @fmt:
     just --fmt --unstable
 
 @lint:
-    black .
-    blacken-docs ./README.md
+    uv run black --check .
+    uv run flake8
 
 @test:
-    pytest
+    uv run pytest
 
 @update:
-    cog -P -r README.md
+    uv run cog -P -r README.md
 
 @upload:
-    twine upload dist/*
+    uv run twine upload dist/*
