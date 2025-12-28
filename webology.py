@@ -21,8 +21,9 @@ Work: Engineer and Partner at [REVSYS](https://www.revsys.com)
 * [djangopackages.org](https://djangopackages.org)
 * [awesomedjango.org](https://awesomedjango.org)
 * [djangocon.us](https://djangocon.us)
+* [djangojobboard.com](https://djangojobboard.com)
 
-Card: pipx run webology
+Card: uvx webology
 
 """
 __version__ = "2022.11.2"

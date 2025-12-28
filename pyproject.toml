@@ -34,6 +34,7 @@ Funding = "https://github.com/users/jefftriplett/sponsorship"
 Issues = "https://github.com/jefftriplett/webology/issues"
 Mastodon = "https://mastodon.social/@webology"
 Twitter = "https://twitter.com/webology"
+"Django Job Board" = "https://djangojobboard.com"
 
 [project.scripts]
 webology = "webology:main"
