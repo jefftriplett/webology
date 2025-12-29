@@ -1,7 +1,7 @@
 [project]
 name = "webology"
 version = "2022.11.2"
-description = "My pypi/pipx card"
+description = "My pypi/uvx card"
 readme = "README.md"
 license = "Apache-2.0"
 authors = [

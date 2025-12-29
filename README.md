@@ -7,7 +7,7 @@ Inspired by [bnb/bitandbang](https://github.com/bnb/bitandbang)
 ## :rocket: Usage
 
 ```shell
-$ pipx run webology
+$ uvx webology
 ```
 
 ## 🤝 Contributing
