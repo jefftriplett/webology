@@ -40,7 +40,7 @@ Projects
 Card: uvx webology
 """
 
-__version__ = "2022.11.2"
+__version__ = "2025.12.1"
 
 RAINBOW_COLORS = [
     "#ff595e",
