@@ -53,12 +53,11 @@ packages = ["."]
 
 [dependency-groups]
 dev = [
-    "black",
     "bumpver",
     "cogapp",
-    "flake8",
     "pytest",
     "rich-codex[cairo]",
+    "ruff",
     "twine",
 ]
 

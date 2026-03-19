@@ -27,8 +27,8 @@ set dotenv-load := false
     just --fmt --unstable
 
 @lint:
-    uv run black --check .
-    uv run flake8
+    uv run ruff check .
+    uv run ruff format --check .
 
 @test:
     uv run pytest
