@@ -1,7 +1,7 @@
 <h1 align="center">Welcome to webology 👋</h1>
 
 <p align="center">
-  <img src="webology.svg" alt="webology" />
+  <img src="https://raw.githubusercontent.com/jefftriplett/webology/refs/heads/main/webology.svg" alt="webology" />
 </p>
 
 Inspired by [bnb/bitandbang](https://github.com/bnb/bitandbang)
