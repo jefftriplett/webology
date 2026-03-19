@@ -139,7 +139,29 @@ def typing_effect(
         live.update(Panel(displayed, title=panel_title, border_style="bright_blue"))
 
 
-def main():
+def export_svg(path: str = "webology.svg"):
+    """Export the logo screen as an SVG file."""
+    console = Console(record=True, width=80)
+    header = make_gradient_text(ASCII_ART, RAINBOW_COLORS, offset=0)
+    prompt = Text("Press any key to reveal the card", style="dim")
+    panel = Panel(
+        Align.center(Text.assemble("\n\n", header, "\n\n", prompt, "\n\n")),
+        border_style="bright_blue",
+        title="[bold]webology[/bold]",
+        subtitle="vibe mode",
+    )
+    console.print(panel)
+    svg = console.export_svg(title="webology")
+    with open(path, "w") as f:
+        f.write(svg)
+    Console().print(f"[green]Exported SVG to {path}[/green]")
+
+
+def main(svg: bool = typer.Option(False, "--svg", help="Export logo as SVG")):
+    if svg:
+        export_svg()
+        return
+
     console = Console()
 
     # Spinner reveal
