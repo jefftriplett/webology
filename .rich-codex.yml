@@ -1,0 +1,5 @@
+outputs:
+  - command: "uvx webology"
+    # title: Output from webology command
+    img_paths:
+      - img/uvx-webology.png

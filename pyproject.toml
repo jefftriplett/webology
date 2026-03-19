@@ -30,11 +30,15 @@ dependencies = [
 [project.urls]
 Homepage = "https://github.com/jefftriplett/webology"
 Code = "https://github.com/jefftriplett/webology"
-Funding = "https://github.com/users/jefftriplett/sponsorship"
+Funding = "https://github.com/sponsors/jefftriplett"
 Issues = "https://github.com/jefftriplett/webology/issues"
+Bluesky = "https://bsky.app/profile/webology.bsky.social"
 Mastodon = "https://mastodon.social/@webology"
-Twitter = "https://twitter.com/webology"
+X = "https://x.com/webology"
 "Django Job Board" = "https://djangojobboard.com"
+DjangoTV = "https://djangotv.com"
+Links = "https://webology.dev"
+"Upgrade Django" = "https://upgradedjango.com"
 
 [project.scripts]
 webology = "webology:main"

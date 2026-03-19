@@ -28,7 +28,7 @@ Work: Engineer and Partner at REVSYS (https://www.revsys.com)
   Links:    webology.dev
   GitHub:   @jefftriplett
   Mastodon: @webology@mastodon.social
-  Twitter:  @webology
+  X:        @webology
 
 Projects
   • django-news.com
@@ -36,6 +36,8 @@ Projects
   • awesomedjango.org
   • djangocon.us
   • djangojobboard.com
+  • djangotv.com
+  • upgradedjango.com
 
 Card: uvx webology
 """
@@ -129,7 +131,9 @@ def typing_effect(
             style = style_map.get(i)
             displayed.append(char, style=style)
             with_cursor = Text.assemble(displayed, (cursor, "bold bright_white"))
-            live.update(Panel(with_cursor, title=panel_title, border_style="bright_blue"))
+            live.update(
+                Panel(with_cursor, title=panel_title, border_style="bright_blue")
+            )
             if char not in " \n":
                 time.sleep(delay)
         live.update(Panel(displayed, title=panel_title, border_style="bright_blue"))
