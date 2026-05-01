@@ -42,7 +42,7 @@ Links = "https://webology.dev"
 "Upgrade Django" = "https://upgradedjango.com"
 
 [project.scripts]
-webology = "webology:main"
+webology = "webology:cli"
 
 [build-system]
 requires = ["hatchling"]

@@ -157,7 +157,22 @@ def export_svg(path: str = "webology.svg"):
     Console().print(f"[green]Exported SVG to {path}[/green]")
 
 
-def main(svg: bool = typer.Option(False, "--svg", help="Export logo as SVG")):
+def version_callback(value: bool):
+    if value:
+        typer.echo(f"webology {__version__}")
+        raise typer.Exit()
+
+
+def main(
+    svg: bool = typer.Option(False, "--svg", help="Export logo as SVG"),
+    version: bool = typer.Option(
+        False,
+        "--version",
+        callback=version_callback,
+        is_eager=True,
+        help="Show version and exit",
+    ),
+):
     if svg:
         export_svg()
         return
@@ -194,5 +209,9 @@ def main(svg: bool = typer.Option(False, "--svg", help="Export logo as SVG")):
     typing_effect(console, content, "[bold]Jeff Triplett[/bold]", delay=0.008)
 
 
-if __name__ == "__main__":
+def cli():
     typer.run(main)
+
+
+if __name__ == "__main__":
+    cli()
