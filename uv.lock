@@ -1427,7 +1427,7 @@ wheels = [
 
 [[package]]
 name = "webology"
-version = "2026.3.3"
+version = "2026.3.4"
 source = { editable = "." }
 dependencies = [
     { name = "rich" },
