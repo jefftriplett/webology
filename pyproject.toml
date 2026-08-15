@@ -21,6 +21,7 @@ classifiers = [
     "Programming Language :: Python :: 3.12",
     "Programming Language :: Python :: 3.13",
     "Programming Language :: Python :: 3.14",
+    "Programming Language :: Python :: 3.15",
 ]
 requires-python = ">=3.10"
 dependencies = [
@@ -40,6 +41,8 @@ X = "https://x.com/webology"
 DjangoTV = "https://djangotv.com"
 Links = "https://webology.dev"
 "Upgrade Django" = "https://upgradedjango.com"
+"Django Webring" = "https://djangowebring.com"
+"Django Template Tags and Filters" = "https://djangotemplatetagsandfilters.com"
 
 [project.scripts]
 webology = "webology:cli"

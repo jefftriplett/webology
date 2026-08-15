@@ -1,3 +1,4 @@
+import random
 import select
 import sys
 import termios
@@ -27,6 +28,7 @@ Work: Engineer and Partner at REVSYS (https://www.revsys.com)
   Website:  jefftriplett.com
   Links:    webology.dev
   GitHub:   @jefftriplett
+  Bluesky:  @webology.bsky.social
   Mastodon: @webology@mastodon.social
   X:        @webology
 
@@ -38,6 +40,8 @@ Projects
   • djangojobboard.com
   • djangotv.com
   • upgradedjango.com
+  • djangowebring.com
+  • djangotemplatetagsandfilters.com
 
 Card: uvx webology
 """
@@ -63,14 +67,19 @@ RAINBOW_COLORS = [
 ] * 4
 
 
-def make_gradient_text(text: str, colors: list[str], offset: int = 0) -> Text:
-    """Create rainbow gradient text."""
+def make_gradient_text(
+    text: str, colors: list[str], offset: int = 0, sparkle: float = 0.0
+) -> Text:
+    """Create rainbow gradient text with optional sparkle effect."""
     result = Text()
     lines = text.strip().split("\n")
     for line in lines:
         for i, char in enumerate(line):
-            color = colors[(i + offset) % len(colors)]
-            result.append(char, style=color)
+            if sparkle > 0 and char != " " and random.random() < sparkle:
+                result.append(char, style="bold bright_white")
+            else:
+                color = colors[(i + offset) % len(colors)]
+                result.append(char, style=color)
         result.append("\n")
     return result
 
@@ -89,7 +98,9 @@ def animate_logo_until_keypress(console: Console, fps: int = 14) -> int:
                 if select.select([sys.stdin], [], [], 0)[0]:
                     sys.stdin.read(1)
                     break
-                header = make_gradient_text(ASCII_ART, RAINBOW_COLORS, offset=offset)
+                header = make_gradient_text(
+                    ASCII_ART, RAINBOW_COLORS, offset=offset, sparkle=0.08
+                )
                 panel = Panel(
                     Align.center(Text.assemble("\n\n", header, "\n\n", prompt, "\n\n")),
                     border_style="bright_blue",
@@ -105,38 +116,59 @@ def animate_logo_until_keypress(console: Console, fps: int = 14) -> int:
     return offset
 
 
-def typing_effect(
+def dissolve_effect(
     console: Console,
     text: Text,
     panel_title: str,
-    delay: float = 0.01,
-    cursor: str = "▌",
+    batch_size: int = 3,
+    delay: float = 0.008,
 ):
-    """Display text with a typing animation effect."""
-    displayed = Text()
+    """Reveal text with a random pixel dissolve like classic Sierra games."""
     plain = text.plain
+    length = len(plain)
 
-    # Build a map of character index to style
     style_map = {}
     for span in text._spans:
         for i in range(span.start, span.end):
             style_map[i] = span.style
 
+    revealed = [False] * length
+    # Pre-mark spaces and newlines as revealed
+    for i, char in enumerate(plain):
+        if char in " \n":
+            revealed[i] = True
+
+    # Build the random reveal order for non-whitespace characters
+    unrevealed = [i for i in range(length) if not revealed[i]]
+    random.shuffle(unrevealed)
+
     with Live(
-        Panel(displayed, title=panel_title, border_style="bright_blue"),
+        Panel(Text(" "), title=panel_title, border_style="bright_blue"),
         console=console,
         refresh_per_second=60,
     ) as live:
-        for i, char in enumerate(plain):
-            style = style_map.get(i)
-            displayed.append(char, style=style)
-            with_cursor = Text.assemble(displayed, (cursor, "bold bright_white"))
+        for batch_start in range(0, len(unrevealed), batch_size):
+            batch = unrevealed[batch_start : batch_start + batch_size]
+            for idx in batch:
+                revealed[idx] = True
+
+            displayed = Text()
+            for i, char in enumerate(plain):
+                if revealed[i]:
+                    displayed.append(char, style=style_map.get(i))
+                else:
+                    displayed.append(" ")
+
             live.update(
-                Panel(with_cursor, title=panel_title, border_style="bright_blue")
+                Panel(displayed, title=panel_title, border_style="bright_blue")
             )
-            if char not in " \n":
-                time.sleep(delay)
-        live.update(Panel(displayed, title=panel_title, border_style="bright_blue"))
+            time.sleep(delay)
+
+        # Final clean render
+        final = Text()
+        for i, char in enumerate(plain):
+            final.append(char, style=style_map.get(i))
+        live.update(Panel(final, title=panel_title, border_style="bright_blue"))
 
 
 def export_svg(path: str = "webology.svg"):
@@ -163,8 +195,91 @@ def version_callback(value: bool):
         raise typer.Exit()
 
 
+LINK_MAP = {
+    "https://www.revsys.com": "https://www.revsys.com",
+    "jefftriplett.com": "https://jefftriplett.com",
+    "webology.dev": "https://webology.dev",
+    "@jefftriplett": "https://github.com/jefftriplett",
+    "@webology.bsky.social": "https://bsky.app/profile/webology.bsky.social",
+    "@webology@mastodon.social": "https://mastodon.social/@webology",
+    "@webology": "https://x.com/webology",
+    "django-news.com": "https://django-news.com",
+    "djangopackages.org": "https://djangopackages.org",
+    "awesomedjango.org": "https://awesomedjango.org",
+    "djangocon.us": "https://djangocon.us",
+    "djangojobboard.com": "https://djangojobboard.com",
+    "djangotv.com": "https://djangotv.com",
+    "upgradedjango.com": "https://upgradedjango.com",
+    "djangowebring.com": "https://djangowebring.com",
+    "djangotemplatetagsandfilters.com": "https://djangotemplatetagsandfilters.com",
+}
+
+
+def _linkify(text: str, base_style: str = "") -> Text:
+    """Return a Text object with clickable links for known tokens."""
+    result = Text()
+    remaining = text
+    sorted_tokens = sorted(LINK_MAP.keys(), key=len, reverse=True)
+    while remaining:
+        match = None
+        earliest_pos = len(remaining)
+        for token in sorted_tokens:
+            pos = remaining.find(token)
+            if pos != -1 and pos < earliest_pos:
+                earliest_pos = pos
+                match = (pos, token, LINK_MAP[token])
+        if match is None:
+            result.append(remaining, style=base_style)
+            break
+        pos, token, url = match
+        if pos > 0:
+            result.append(remaining[:pos], style=base_style)
+        result.append(token, style=f"{base_style} link {url}".strip())
+        remaining = remaining[pos + len(token) :]
+    return result
+
+
+def build_card_content() -> Text:
+    """Build styled card content as a Rich Text object."""
+    content = Text()
+    lines = CARD_CONTENT.strip().split("\n")
+    for line in lines:
+        if line.startswith("Work:"):
+            content.append_text(_linkify(line, "italic"))
+            content.append("\n")
+        elif line.startswith("Projects"):
+            content.append("\n" + line + "\n", style="bold bright_magenta")
+        elif line.strip().startswith("•"):
+            content.append_text(_linkify(line, "bright_green"))
+            content.append("\n")
+        elif line.startswith("Card:"):
+            content.append("\n" + line + "\n", style="dim italic")
+        elif ":" in line.strip() and line.strip()[0].isalpha():
+            parts = line.split(":", 1)
+            content.append(parts[0] + ":", style="bold cyan")
+            content.append_text(_linkify(parts[1], "white"))
+            content.append("\n")
+        else:
+            content.append(line + "\n")
+    return content
+
+
+def show_static_card(console: Console):
+    """Show the card without animation (for piped output or --no-animate)."""
+    header = make_gradient_text(ASCII_ART, RAINBOW_COLORS, offset=0)
+    content = build_card_content()
+    full = Text.assemble(header, "\n", content)
+    console.print(
+        Panel(full, title="[bold]Jeff Triplett[/bold]", border_style="bright_blue")
+    )
+
+
 def main(
     svg: bool = typer.Option(False, "--svg", help="Export logo as SVG"),
+    card: bool = typer.Option(False, "--card", help="Show card without logo animation"),
+    no_animate: bool = typer.Option(
+        False, "--no-animate", help="Show card without any animation"
+    ),
     version: bool = typer.Option(
         False,
         "--version",
@@ -179,34 +294,15 @@ def main(
 
     console = Console()
 
-    # Spinner reveal
-    with console.status("[bold cyan]Loading card...", spinner="dots"):
-        time.sleep(0.8)
+    if no_animate or not sys.stdout.isatty():
+        show_static_card(console)
+        return
 
-    # Create the card content
-    content = Text()
-    animate_logo_until_keypress(console)
+    if not card:
+        animate_logo_until_keypress(console)
 
-    # Add the rest with some styling
-    lines = CARD_CONTENT.strip().split("\n")
-    for line in lines:
-        if line.startswith("Work:"):
-            content.append(line + "\n", style="italic")
-        elif line.startswith("Projects"):
-            content.append("\n" + line + "\n", style="bold bright_magenta")
-        elif line.strip().startswith("•"):
-            content.append(line + "\n", style="bright_green")
-        elif line.startswith("Card:"):
-            content.append("\n" + line + "\n", style="dim italic")
-        elif ":" in line and not line.startswith(" "):
-            parts = line.split(":", 1)
-            content.append(parts[0] + ":", style="bold cyan")
-            content.append(parts[1] + "\n", style="white")
-        else:
-            content.append(line + "\n")
-
-    # Typing animation
-    typing_effect(console, content, "[bold]Jeff Triplett[/bold]", delay=0.008)
+    content = build_card_content()
+    dissolve_effect(console, content, "[bold]Jeff Triplett[/bold]")
 
 
 def cli():
